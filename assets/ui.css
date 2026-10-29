@@ -84,7 +84,9 @@ select { padding-right: 28px; }
 }
 .btn:active { transform: scale(0.97); }
 .btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
-.seg { display: inline-flex; background: var(--surface-2); border-radius: 9px; padding: 3px; gap: 2px; }
+.seg { display: inline-flex; background: var(--surface-2); border-radius: 9px; padding: 3px; gap: 2px; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.seg::-webkit-scrollbar { display: none; }
+.seg .btn { white-space: nowrap; flex: none; }
 .seg .btn { border: 0; background: transparent; min-height: 30px; padding: 4px 12px; }
 .seg .btn[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--ring), 0 1px 2px rgba(0,0,0,.06); }
 @media (hover: hover) and (pointer: fine) {

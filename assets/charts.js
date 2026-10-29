@@ -232,6 +232,7 @@
     const fmt = opts.fmt || ((v) => v.toFixed(0));
     const max = opts.max || Math.max(...opts.cells.flat().filter((v) => v != null));
     const step = (v) => Math.min(7, Math.max(1, Math.ceil((v / max) * 7)));
+    const dark = css("--page") === "#0d0d0d";
     let h = `<div class="table-wrap"><table class="data heat"><thead><tr><th>${opts.corner || ""}</th>${opts.cols.map((c) => `<th>${c}</th>`).join("")}</tr></thead><tbody>`;
     opts.rows.forEach((r, ri) => {
       h += `<tr><td>${r}</td>`;
@@ -239,8 +240,9 @@
         const v = opts.cells[ri][ci];
         if (v == null) { h += "<td></td>"; return; }
         const s = step(v);
-        const ink = s >= 5 ? "#fff" : "var(--ink)";
-        h += `<td style="background:var(--seq-${s});color:${ink}" title="${r} · ${opts.cols[ci]}: ${fmt(v)}">${fmt(v)}</td>`;
+        const ink = dark ? (s >= 6 ? "#0b0b0b" : "#f0efec") : (s >= 5 ? "#fff" : "#0b0b0b");
+        const label = String(r).replace(/<[^>]*>/g, "").replace(/"/g, "&quot;");
+        h += `<td style="background:var(--seq-${s});color:${ink}" title="${label} · ${opts.cols[ci]}: ${fmt(v)}">${fmt(v)}</td>`;
       });
       h += "</tr>";
     });
