@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lectura de test A/B</title>
+<meta name="description" content="¿La página nueva convierte más? Lectura de un experimento A/B con 290 mil usuarios: chequeos de integridad, test de proporciones, potencia y decisión de negocio.">
+<link rel="stylesheet" href="assets/ui.css">
+<style>
+  .verdict { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 999px; background: var(--surface-2); }
+  .badge svg { width: 16px; height: 16px; }
+  .verdict p { margin: 0; color: var(--ink-2); max-width: 70ch; }
+  .checks { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .checks li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+  .checks svg { flex: none; width: 18px; height: 18px; margin-top: 2px; }
+  .forest text { font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Experimentación · Análisis A/B</div>
+      <h1>¿La página nueva convierte más que la actual?</h1>
+      <p id="intro">Lectura completa de un experimento de landing page: integridad de la muestra, efecto con su incertidumbre, potencia y una recomendación concreta.</p>
+    </div>
+    <button class="btn" id="theme" type="button">Auto</button>
+  </header>
+
+  <section class="card reveal" style="margin-bottom:16px">
+    <div class="verdict">
+      <span class="badge" id="badge"></span>
+      <p id="verdict-text"></p>
+    </div>
+  </section>
+
+  <section class="grid" id="kpis"></section>
+
+  <section class="grid" style="margin-top:16px">
+    <div class="card span-8 reveal">
+      <h2>Efecto estimado e intervalo de confianza del 95%</h2>
+      <p class="sub">Diferencia de conversión (página nueva menos actual), en puntos porcentuales. La línea punteada es la mejora mínima que pide el negocio.</p>
+      <div id="forest" class="chart"></div>
+    </div>
+    <div class="card span-4 reveal">
+      <h2>Chequeos antes de mirar el resultado</h2>
+      <p class="sub">Si alguno falla, el resultado no se lee.</p>
+      <ul class="checks" id="checks"></ul>
+    </div>
+
+    <div class="card span-12 reveal">
+      <h2>Conversión acumulada por día</h2>
+      <p class="sub">Las curvas se estabilizan y no se cruzan de forma sostenida: no hay efecto novedad que cambie la conclusión.</p>
+      <div id="daily"></div>
+    </div>
+
+    <div class="card span-6 reveal">
+      <h2>¿Cambia según el país?</h2>
+      <p class="sub">Mismo test por segmento, con corrección de Bonferroni por comparar tres veces.</p>
+      <div id="countries"></div>
+    </div>
+    <div class="card span-6 reveal">
+      <h2>Cómo se calculó</h2>
+      <ul class="note" style="margin:0;padding-left:18px">
+        <li>Unidad de análisis: usuario. Se descartan filas con grupo y página que no coinciden y usuarios repetidos (se conserva su primera visita).</li>
+        <li>Sample Ratio Mismatch: chi-cuadrado contra un reparto 50/50.</li>
+        <li>Efecto: test z de dos proporciones, bilateral, α = 0,05. IC de Wald para la diferencia.</li>
+        <li>Potencia: con 80% de potencia, efecto mínimo detectable con la muestra real y muestra necesaria para el mínimo de negocio.</li>
+        <li>Decisión: se lanza solo si el intervalo completo queda por encima de cero; si el intervalo descarta la mejora buscada, se mantiene la página actual.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="foot">
+    Datos: experimento público de e-commerce (ab_data.csv, curso de Data Analyst de Udacity). Código y tests en
+    <a href="https://github.com/nbbz95/analisis-test-ab">GitHub</a>.
+  </footer>
+</div>
+
+<script src="assets/charts.js"></script>
+<script>
+const pct = (v, d = 2) => (v * 100).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d }) + "%";
+const pp = (v, d = 2) => (v >= 0 ? "+" : "−") + Math.abs(v * 100).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d }) + " pp";
+const num = (v) => v.toLocaleString("es-AR");
+const ICON = {
+  ok: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#0ca30c"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warn: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#fab219"/><path d="M10 5.5v5.5M10 14v.5" stroke="#0b0b0b" stroke-width="2" stroke-linecap="round"/></svg>',
+  stop: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#d03b3b"/><path d="M6.5 6.5l7 7M13.5 6.5l-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+};
+
+fetch("data.json").then((r) => r.json()).then((d) => {
+  const r = d.resultado;
+  const v = d.decision.veredicto;
+  document.getElementById("badge").innerHTML = (v === "lanzar" ? ICON.ok : v === "no lanzar" ? ICON.stop : ICON.warn) + "Recomendación: " + v;
+  document.getElementById("verdict-text").textContent = d.decision.texto +
+    ` La diferencia observada es ${pp(r.diferencia)} (IC 95%: ${pp(r.ic95_bajo)} a ${pp(r.ic95_alto)}), p = ${r.p_valor.toFixed(2).replace(".", ",")}.`;
+  document.getElementById("intro").textContent =
+    `${num(d.limpieza.filas_finales)} usuarios entre el ${d.periodo.desde} y el ${d.periodo.hasta}. Integridad de la muestra, efecto con su incertidumbre, potencia y una recomendación concreta.`;
+
+  const kpis = [
+    ["Conversión página actual", pct(r.tasa_control), `${num(r.n_control)} usuarios`],
+    ["Conversión página nueva", pct(r.tasa_tratamiento), `${num(r.n_tratamiento)} usuarios`],
+    ["Diferencia", pp(r.diferencia), `lift relativo ${(r.lift_relativo * 100).toFixed(1).replace(".", ",")}%`],
+    ["p-valor", r.p_valor.toFixed(3).replace(".", ","), r.p_valor < 0.05 ? "significativo al 5%" : "no significativo al 5%"],
+  ];
+  document.getElementById("kpis").innerHTML = kpis.map(([l, val, s]) =>
+    `<div class="card kpi span-3 reveal"><div class="label">${l}</div><div class="value">${val}</div><div class="delta">${s}</div></div>`).join("");
+
+  const srmOk = d.srm_p > 0.01;
+  const powerOk = d.mde_detectable <= d.mde_negocio;
+  const lostShare = (d.limpieza.filas_originales - d.limpieza.filas_finales) / d.limpieza.filas_originales;
+  document.getElementById("checks").innerHTML = [
+    [srmOk, `Reparto de usuarios balanceado (SRM p = ${d.srm_p.toFixed(2).replace(".", ",")}).`],
+    [lostShare < 0.05, `Se descartó el ${pct(lostShare, 1)} de las filas: ${num(d.limpieza.mal_asignados)} mal asignadas y ${num(d.limpieza.duplicados)} usuario repetido.`],
+    [powerOk, `Con esta muestra se detectan efectos desde ${pp(d.mde_detectable)}; el negocio pide ${pp(d.mde_negocio, 1)} (alcanzaba con ${num(d.muestra_necesaria)} usuarios por grupo).`],
+  ].map(([ok, t]) => `<li>${ok ? ICON.ok : ICON.warn}<span>${t}</span></li>`).join("");
+
+  drawForest(d);
+  const days = d.diario;
+  const lineOpts = {
+    labels: days.map((x) => x.dia.slice(5)),
+    series: [
+      { name: "Página actual", values: days.map((x) => x.acum_control), slot: 0 },
+      { name: "Página nueva", values: days.map((x) => x.acum_treatment), slot: 1 },
+    ],
+    fmt: (x) => pct(x), tickFmt: (x) => pct(x, 1), zero: false, height: 240, aria: "Conversión acumulada por día y grupo",
+  };
+  const daily = document.getElementById("daily");
+  daily.id = "daily";
+  const lc = Charts.line(daily, lineOpts);
+
+  Charts.table("#countries", ["País", "Usuarios", "Actual", "Nueva", "Diferencia", "p ajustado"],
+    d.paises.map((p) => [p.segmento, num(p.n_control + p.n_tratamiento), pct(p.tasa_control), pct(p.tasa_tratamiento), pp(p.diferencia), p.p_bonferroni.toFixed(2).replace(".", ",")]));
+
+  Charts.themeToggle(document.getElementById("theme"), () => { lc.redraw(); drawForest(d); },
+    { system: "Auto", light: "Claro", dark: "Oscuro", prefix: "Tema" });
+});
+
+// Forest plot: one row for the total and one per country, shared axis.
+function drawForest(d) {
+  const host = document.getElementById("forest");
+  const rows = [{ label: "Total", ...d.resultado }].concat(d.paises.map((p) => ({ label: p.segmento, ...p })));
+  const W = host.clientWidth || 600, rowH = 34, m = { l: 60, r: 16, t: 8, b: 26 };
+  const H = m.t + rows.length * rowH + m.b;
+  const lo = Math.min(-0.02, ...rows.map((r) => r.ic95_bajo)), hi = Math.max(0.02, d.mde_negocio, ...rows.map((r) => r.ic95_alto));
+  const x = (v) => m.l + ((v - lo) / (hi - lo)) * (W - m.l - m.r);
+  const c = Charts.css;
+  let s = `<svg class="forest" viewBox="0 0 ${W} ${H}" role="img" aria-label="Intervalos de confianza de la diferencia de conversión">`;
+  [-0.02, -0.01, 0, 0.01, 0.02].filter((t) => t >= lo && t <= hi).forEach((t) => {
+    s += `<line x1="${x(t)}" x2="${x(t)}" y1="${m.t}" y2="${H - m.b}" stroke="${t === 0 ? c("--axis") : c("--grid")}"/>`;
+    s += `<text class="tick" x="${x(t)}" y="${H - 8}" text-anchor="middle" fill="${c("--muted")}">${(t * 100).toFixed(0)} pp</text>`;
+  });
+  s += `<line x1="${x(d.mde_negocio)}" x2="${x(d.mde_negocio)}" y1="${m.t}" y2="${H - m.b}" stroke="${c("--s3")}" stroke-dasharray="4 4" stroke-width="1.5"/>`;
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH + rowH / 2;
+    const color = i === 0 ? c("--s1") : c("--muted");
+    s += `<text x="0" y="${y + 4}" fill="${c("--ink-2")}" font-weight="${i === 0 ? 600 : 400}">${r.label}</text>`;
+    s += `<line x1="${x(r.ic95_bajo)}" x2="${x(r.ic95_alto)}" y1="${y}" y2="${y}" stroke="${color}" stroke-width="${i === 0 ? 3 : 2}" stroke-linecap="round"/>`;
+    s += `<circle cx="${x(r.diferencia)}" cy="${y}" r="${i === 0 ? 6 : 4.5}" fill="${color}" stroke="${c("--surface")}" stroke-width="2"/>`;
+  });
+  host.innerHTML = s + "</svg>";
+}
+window.addEventListener("resize", () => { clearTimeout(window.__f); window.__f = setTimeout(() => fetch("data.json").then((r) => r.json()).then(drawForest), 150); });
+</script>
+</body>
+</html>
