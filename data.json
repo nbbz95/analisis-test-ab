@@ -1,0 +1,294 @@
+{
+ "limpieza": {
+  "filas_originales": 294478,
+  "mal_asignados": 3893,
+  "duplicados": 1,
+  "filas_finales": 290584
+ },
+ "periodo": {
+  "desde": "2017-01-02",
+  "hasta": "2017-01-24"
+ },
+ "resultado": {
+  "n_control": 145274,
+  "n_tratamiento": 145310,
+  "conv_control": 17489,
+  "conv_tratamiento": 17264,
+  "tasa_control": 0.1203863045004612,
+  "tasa_tratamiento": 0.11880806551510564,
+  "diferencia": -0.0015782389853555567,
+  "lift_relativo": -0.01310978845894809,
+  "ic95_bajo": -0.003937860245052736,
+  "ic95_alto": 0.0007813822743416229,
+  "z": -1.3109241984234394,
+  "p_valor": 0.18988337448195103
+ },
+ "srm_p": 0.9467543681597944,
+ "mde_negocio": 0.005,
+ "mde_detectable": 0.003382668355839772,
+ "muestra_necesaria": 67676,
+ "decision": {
+  "veredicto": "no lanzar",
+  "texto": "No hay diferencia detectable, y el intervalo descarta una mejora del tamaño que buscaba el negocio. Mantener la página actual.",
+  "significativo": false
+ },
+ "paises": [
+  {
+   "n_control": 7198,
+   "n_tratamiento": 7301,
+   "conv_control": 855,
+   "conv_tratamiento": 817,
+   "tasa_control": 0.11878299527646569,
+   "tasa_tratamiento": 0.11190247911245035,
+   "diferencia": -0.006880516164015332,
+   "lift_relativo": -0.05792509397495013,
+   "ic95_bajo": -0.017280136751394153,
+   "ic95_alto": 0.0035191044233634887,
+   "z": -1.2968998972345893,
+   "p_valor": 0.19466563188528263,
+   "segmento": "CA",
+   "p_bonferroni": 0.5839968956558479
+  },
+  {
+   "n_control": 36360,
+   "n_tratamiento": 36106,
+   "conv_control": 4364,
+   "conv_tratamiento": 4375,
+   "tasa_control": 0.12002200220022002,
+   "tasa_tratamiento": 0.1211709965102753,
+   "diferencia": 0.0011489943100552735,
+   "lift_relativo": 0.009573197322092058,
+   "ic95_bajo": -0.003593179942518048,
+   "ic95_alto": 0.005891168562628595,
+   "z": 0.4748911128778919,
+   "p_valor": 0.6348645861921696,
+   "segmento": "UK",
+   "p_bonferroni": 1.0
+  },
+  {
+   "n_control": 101716,
+   "n_tratamiento": 101903,
+   "conv_control": 12270,
+   "conv_tratamiento": 12072,
+   "tasa_control": 0.12062998938220143,
+   "tasa_tratamiento": 0.11846559963887227,
+   "diferencia": -0.002164389743329165,
+   "lift_relativo": -0.01794238525936995,
+   "ic95_bajo": -0.004982720374255335,
+   "ic95_alto": 0.0006539408875970046,
+   "z": -1.5051934564639167,
+   "p_valor": 0.13227434700167942,
+   "segmento": "US",
+   "p_bonferroni": 0.3968230410050383
+  }
+ ],
+ "diario": [
+  {
+   "dia": "2017-01-02",
+   "tasa_control": 0.12556838055264077,
+   "acum_control": 0.12556838055264077,
+   "n_control": 2859,
+   "tasa_treatment": 0.11987381703470032,
+   "acum_treatment": 0.11987381703470032,
+   "n_treatment": 2853
+  },
+  {
+   "dia": "2017-01-03",
+   "tasa_control": 0.11380880121396054,
+   "acum_control": 0.11736691713408827,
+   "n_control": 6590,
+   "tasa_treatment": 0.11378059836808703,
+   "acum_treatment": 0.11561609122584732,
+   "n_treatment": 6618
+  },
+  {
+   "dia": "2017-01-04",
+   "tasa_control": 0.12192155670416539,
+   "acum_control": 0.11923628876271292,
+   "n_control": 6578,
+   "tasa_treatment": 0.11664883045405901,
+   "acum_treatment": 0.11603797152135899,
+   "n_treatment": 6541
+  },
+  {
+   "dia": "2017-01-05",
+   "tasa_control": 0.12323012291893574,
+   "acum_control": 0.12037944241560523,
+   "n_control": 6427,
+   "tasa_treatment": 0.11498847040737895,
+   "acum_treatment": 0.1157347781676067,
+   "n_treatment": 6505
+  },
+  {
+   "dia": "2017-01-06",
+   "tasa_control": 0.11534968210717529,
+   "acum_control": 0.1192360633172746,
+   "n_control": 6606,
+   "tasa_treatment": 0.1234622795316437,
+   "acum_treatment": 0.11751640240568617,
+   "n_treatment": 6747
+  },
+  {
+   "dia": "2017-01-07",
+   "tasa_control": 0.12098728043609934,
+   "acum_control": 0.11956034096007179,
+   "n_control": 6604,
+   "tasa_treatment": 0.11620517476168861,
+   "acum_treatment": 0.11727483065257993,
+   "n_treatment": 6609
+  },
+  {
+   "dia": "2017-01-08",
+   "tasa_control": 0.11888739344997756,
+   "acum_control": 0.11945408609005691,
+   "n_control": 6687,
+   "tasa_treatment": 0.12074626865671642,
+   "acum_treatment": 0.11782115425269538,
+   "n_treatment": 6700
+  },
+  {
+   "dia": "2017-01-09",
+   "tasa_control": 0.1196439348219674,
+   "acum_control": 0.11947977704730599,
+   "n_control": 6628,
+   "tasa_treatment": 0.1180650037792895,
+   "acum_treatment": 0.11785394811742701,
+   "n_treatment": 6615
+  },
+  {
+   "dia": "2017-01-10",
+   "tasa_control": 0.11286444244063722,
+   "acum_control": 0.11868854816385958,
+   "n_control": 6654,
+   "tasa_treatment": 0.12634408602150538,
+   "acum_treatment": 0.11887123326891418,
+   "n_treatment": 6696
+  },
+  {
+   "dia": "2017-01-11",
+   "tasa_control": 0.11886961722488039,
+   "acum_control": 0.11870797965372827,
+   "n_control": 6688,
+   "tasa_treatment": 0.11509066386932414,
+   "acum_treatment": 0.11846795722301261,
+   "n_treatment": 6673
+  },
+  {
+   "dia": "2017-01-12",
+   "tasa_control": 0.12204845139527752,
+   "acum_control": 0.11902444692997109,
+   "n_control": 6522,
+   "tasa_treatment": 0.12234443272562905,
+   "acum_treatment": 0.11883978379628292,
+   "n_treatment": 6637
+  },
+  {
+   "dia": "2017-01-13",
+   "tasa_control": 0.11691086691086691,
+   "acum_control": 0.11884077193447841,
+   "n_control": 6552,
+   "tasa_treatment": 0.11124769514443761,
+   "acum_treatment": 0.1181871020580698,
+   "n_treatment": 6508
+  },
+  {
+   "dia": "2017-01-14",
+   "tasa_control": 0.12675626145387905,
+   "acum_control": 0.11947329241057808,
+   "n_control": 6548,
+   "tasa_treatment": 0.11926049401424459,
+   "acum_treatment": 0.11827316800524902,
+   "n_treatment": 6599
+  },
+  {
+   "dia": "2017-01-15",
+   "tasa_control": 0.1204944891271969,
+   "acum_control": 0.1195506277000124,
+   "n_control": 6714,
+   "tasa_treatment": 0.1134524354863338,
+   "acum_treatment": 0.11791783905458639,
+   "n_treatment": 6549
+  },
+  {
+   "dia": "2017-01-16",
+   "tasa_control": 0.12183280230617509,
+   "acum_control": 0.11970855031076769,
+   "n_control": 6591,
+   "tasa_treatment": 0.11917494270435447,
+   "acum_treatment": 0.1180040882645841,
+   "n_treatment": 6545
+  },
+  {
+   "dia": "2017-01-17",
+   "tasa_control": 0.12286534683391265,
+   "acum_control": 0.11991361115201492,
+   "n_control": 6617,
+   "tasa_treatment": 0.1272560416029367,
+   "acum_treatment": 0.11859751012920251,
+   "n_treatment": 6538
+  },
+  {
+   "dia": "2017-01-18",
+   "tasa_control": 0.1248071582844801,
+   "acum_control": 0.12020637396513055,
+   "n_control": 6482,
+   "tasa_treatment": 0.12479176132061184,
+   "acum_treatment": 0.1189743495245817,
+   "n_treatment": 6603
+  },
+  {
+   "dia": "2017-01-19",
+   "tasa_control": 0.11994527211918517,
+   "acum_control": 0.12019142919295192,
+   "n_control": 6578,
+   "tasa_treatment": 0.11721611721611722,
+   "acum_treatment": 0.11887425274572501,
+   "n_treatment": 6552
+  },
+  {
+   "dia": "2017-01-20",
+   "tasa_control": 0.11524334251606978,
+   "acum_control": 0.1199252422628212,
+   "n_control": 6534,
+   "tasa_treatment": 0.11768228776762989,
+   "acum_treatment": 0.11880887268307505,
+   "n_treatment": 6679
+  },
+  {
+   "dia": "2017-01-21",
+   "tasa_control": 0.12594458438287154,
+   "acum_control": 0.12024210657681268,
+   "n_control": 6749,
+   "tasa_treatment": 0.11570121951219513,
+   "acum_treatment": 0.11865001129925892,
+   "n_treatment": 6560
+  },
+  {
+   "dia": "2017-01-22",
+   "tasa_control": 0.11916312916919346,
+   "acum_control": 0.1201893118898549,
+   "n_control": 6596,
+   "tasa_treatment": 0.11800869695606538,
+   "acum_treatment": 0.11861832943198317,
+   "n_treatment": 6669
+  },
+  {
+   "dia": "2017-01-23",
+   "tasa_control": 0.12567004169148302,
+   "acum_control": 0.12044940644431883,
+   "n_control": 6716,
+   "tasa_treatment": 0.12106135986733002,
+   "acum_treatment": 0.11873274541230963,
+   "n_treatment": 6633
+  },
+  {
+   "dia": "2017-01-24",
+   "tasa_control": 0.11800745871070857,
+   "acum_control": 0.1203863045004612,
+   "n_control": 3754,
+   "tasa_treatment": 0.12170605813637599,
+   "acum_treatment": 0.11880806551510564,
+   "n_treatment": 3681
+  }
+ ]
+}
